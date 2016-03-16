@@ -1,5 +1,5 @@
 from operator import xor as opXor
-from copy import deepcopy
+from itertools import combinations
 
 class spinNetwork():
 
@@ -12,38 +12,47 @@ class spinNetwork():
         return "TBD"
 
     def __str__(self):
-        return "Spin Network of ", self.__qubits, "Qubits with Edges: ", self.getEdges()
+        return "Spin Network of " + str(self.__qubits) \
+             + " Qubits with Edges: " + str(self.getEdges())
 
     def getQubits(self):
         return self.__qubits
 
     def getVertices(self,spin=1):
-        if spin == 1:
-            return self.__vertices
-        else:
+        if spin >= 1:
             vertices = []
-            for i in range(0,self.__qubits):
-                for j in range(1,self.__qubits-i):
-                    vertices += [self.__xor(self.__vertices[i],self.__vertices[i+j])]
+            for combination in combinations(self.__vertices, spin):
+                vertices += [self.__xor(list(combination))]
             return vertices
+        elif spin == 1:
+            return self.__vertices
+        elif spin == 0:
+            return [0]
+        elif spin == self.__qubits:
+            return [2**self.__qubits-1]
+        else:
+            return []
 
     def getEdges(self,spin=1):
-        if spin == 1:
-            return self.__edges
-        else:
+        if spin >= 1:
             edges = []
             candidates = []
             for vertex in self.getVertices(spin):
-                for single in self.__decompose(vertex):
-                    for nn in self.__neighbours(single):
-                        candidates += [self.__xor(single,nn)]
-                for cand in candidates:
-                    cand = self.__xor(vertex,cand)
-                    if cand != 0:
-                        edges += [(vertex,cand)]
-                candidates = []
+                dec = self.__decompose(vertex)
+                for comb in combinations(dec,spin-1):
+                    # neighbours of element in dec not in comb, needs improvement
+                    neighbours = self.__neighbours([x for x in dec if x not in comb][0])
+                    for nn in neighbours:
+                        if nn not in comb:
+                            edges += [(vertex,self.__xor(list(comb)+[nn]))]
+                neighbours = []
+            decomposition = []
             return edges
-
+        elif spin == 1:
+            return self.__edges
+        else:
+            return []
+            
     def getFullGraph(self):
         return ["TBD"]
 
@@ -52,10 +61,6 @@ class spinNetwork():
 
     def getFullHamiltonian(self):
         return ["TBD"]
-
-    # refuses to work, why?
-    #def setEdges(self,edges):
-        #self.__edges = deepcopy(edges)
 
     def __decompose(self,vertex):
         decomp = []
@@ -70,11 +75,13 @@ class spinNetwork():
             if edge[0] == vertex:
                 neighbours += [edge[1]]
         return neighbours
-
-    def __xor(self,*args):
-        result = False
-        if len(args) >= 2:
+        
+    # takes list of arguments and xors all elements
+    def __xor(self, args):
+        if len(args) > 1:
             result = args[0]
             for arg in args[1:]:
                 result = opXor(result,arg)
-        return result
+            return result
+        else:
+            return args[0]
