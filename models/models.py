@@ -19,22 +19,28 @@ class spinNetwork():
         return self.__qubits
 
     def getVertices(self,spin=1):
-        if spin >= 1:
-            vertices = []
-            for combination in combinations(self.__vertices, spin):
-                vertices += [self.__xor(list(combination))]
-            return vertices
-        elif spin == 1:
+        if spin == 1:
             return self.__vertices
         elif spin == 0:
             return [0]
         elif spin == self.__qubits:
             return [2**self.__qubits-1]
+        elif spin >= 1:
+            vertices = []
+            for combination in combinations(self.__vertices, spin):
+                vertices += [self.__xor(list(combination))]
+            return vertices
         else:
             return []
 
     def getEdges(self,spin=1):
-        if spin >= 1:
+        if spin == 1:
+            return self.__edges
+        elif spin == 0:
+            return [(0,0)]
+        elif spin == self.__qubits:
+            return [(2**self.__qubits-1,2**self.__qubits-1)]
+        elif spin >= 1:
             edges = []
             candidates = []
             for vertex in self.getVertices(spin):
@@ -48,13 +54,14 @@ class spinNetwork():
                 neighbours = []
             decomposition = []
             return edges
-        elif spin == 1:
-            return self.__edges
         else:
             return []
             
     def getFullGraph(self):
-        return ["TBD"]
+        edges = []
+        for i in range(0,self.__qubits+1):
+            edges += self.getEdges(i)
+        return edges
 
     def getHamiltonian(self,spin=1):
         return ["TBD"]
