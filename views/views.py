@@ -1,4 +1,4 @@
-# prings graph to certain spin up in mathematica format
+# prints graph to certain spin up in mathematica format
 def mathematicaPrint(spinNetwork,spin=1):
     graphString = ""
     for edge in spinNetwork.getEdges(spin):
