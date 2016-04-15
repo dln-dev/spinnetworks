@@ -5,4 +5,7 @@ The hamiltonian of a system of spins can be interpreted as an adjacency matrix. 
 
 Right now, only homogeneous isotropic chains (J_i ≡1 ) are supported.
 
+Graphs are represented by creating an instance of the spinNetwork class. It needs the number of qubits and the edges in form of a list of tuples containing two vertices. The vertices are powers of two. See example.py for some use cases.
+helper.py contains some functions capable of creating edges for often used networks like chains and stars/switches.
+
 Note that this is still a work in progress and nothing was tested rigourously.
