@@ -42,7 +42,6 @@ class spinNetwork():
             return [(2**self.__qubits-1,2**self.__qubits-1)]
         elif spin >= 1:
             edges = []
-            candidates = []
             for vertex in self.getVertices(spin):
                 dec = self.__decompose(vertex)
                 for comb in combinations(dec,spin-1):
