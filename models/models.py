@@ -5,7 +5,7 @@ class spinNetwork():
 
     def __init__(self,qubits,edges):
         self.__qubits = qubits
-        self.__vertices = [ 2**j for j in range(0,self.__qubits) ] # python = <3
+        self.__vertices = [ 2**j for j in range(0,self.__qubits) ] 
         self.__edges = edges
 
     def __repr__(self):
@@ -45,7 +45,7 @@ class spinNetwork():
             for vertex in self.getVertices(spin):
                 dec = self.__decompose(vertex)
                 for comb in combinations(dec,spin-1):
-                    # neighbours of element in dec not in comb, needs improvement
+                    # neighbours of element in dec not in comb
                     neighbours = self.__neighbours([x for x in dec if x not in comb][0])
                     for nn in neighbours:
                         if nn not in comb:
